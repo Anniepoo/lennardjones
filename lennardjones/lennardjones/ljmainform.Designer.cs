@@ -33,6 +33,7 @@
             this.twoSides = new System.Windows.Forms.CheckBox();
             this.newtonian = new System.Windows.Forms.CheckBox();
             this.friction = new System.Windows.Forms.CheckBox();
+            this.evade = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // radioCart
@@ -87,11 +88,23 @@
             this.friction.Text = "Friction";
             this.friction.UseVisualStyleBackColor = true;
             // 
+            // evade
+            // 
+            this.evade.AutoSize = true;
+            this.evade.Location = new System.Drawing.Point(13, 133);
+            this.evade.Name = "evade";
+            this.evade.Size = new System.Drawing.Size(115, 17);
+            this.evade.TabIndex = 5;
+            this.evade.Text = "Evade when stuck";
+            this.evade.UseVisualStyleBackColor = true;
+            this.evade.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // ljmainform
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1384, 842);
+            this.Controls.Add(this.evade);
             this.Controls.Add(this.friction);
             this.Controls.Add(this.newtonian);
             this.Controls.Add(this.twoSides);
@@ -111,6 +124,7 @@
         private System.Windows.Forms.CheckBox twoSides;
         private System.Windows.Forms.CheckBox newtonian;
         private System.Windows.Forms.CheckBox friction;
+        private System.Windows.Forms.CheckBox evade;
 
     }
 }

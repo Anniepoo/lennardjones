@@ -16,6 +16,7 @@ namespace lennardjones
         Brush[] dotcolors = new Brush[NUMDOTS];
         bool[] dotselected = new bool[NUMDOTS];
         PointF[] dotvel = new PointF[NUMDOTS];
+        bool[] isstuck = new bool[NUMDOTS];
 
         Random rand = new Random();
 
@@ -31,6 +32,7 @@ namespace lennardjones
         const float LEADER_DRIFT = 0.01f;
         const float MASS = 500.0f;
         const float FRIC_COEFFICIENT = 0.998f;
+        const float EVADE_LEVEL = 0.5f; 
 
         bool runThread = true;
 
@@ -88,6 +90,7 @@ namespace lennardjones
             {
                 float dx = 0.0f;
                 float dy = 0.0f;
+                float scalarlj = 0.0f;
 
                 for (int j = 0; j < NUMDOTS; j++)
                 {
@@ -121,9 +124,22 @@ namespace lennardjones
                             if (dotselected[j]) lj *= LEADER_EFFECT;
                         }
 
+                        scalarlj += lj;
                         dx += lj * (dots[i].X - dots[j].X) / dist;
                         dy += lj * (dots[i].Y - dots[j].Y) / dist;
                     }
+                }
+
+
+                // if we're 'stuck' evade by moving at right angles
+                isstuck[i] = false;
+                if (scalarlj > 0.0 &&
+                    this.evade.Checked && (dx*dx + dy*dy) / (scalarlj * scalarlj) < EVADE_LEVEL)
+                {
+                    float t = dx;
+                    dx = dy;
+                    dy = t;
+                    isstuck[i] = true;
                 }
 
                 float MOVE = 1000.0f;
@@ -152,7 +168,9 @@ namespace lennardjones
 
                 dots[i].X = Math.Max(0.0f, Math.Min((float)this.Width, dots[i].X));
                 dots[i].Y = Math.Max(0.0f, Math.Min((float)this.Height, dots[i].Y));
-                
+
+
+
                 // make leaders follow mouse
                 if (dotselected[i])
                 {
@@ -211,6 +229,9 @@ namespace lennardjones
             {
                 e.Graphics.FillEllipse(dotcolors[i] ,(int)(dots[i].X) - DOTSIZE , (int)(dots[i].Y) - DOTSIZE ,
                     2 * DOTSIZE + 1, 2 * DOTSIZE + 1);
+                if (isstuck[i])
+                    e.Graphics.DrawEllipse(Pens.Red, (int)(dots[i].X) - DOTSIZE, (int)(dots[i].Y) - DOTSIZE,
+                    2 * DOTSIZE + 1, 2 * DOTSIZE + 1);
                 if(dotselected[i])
                     e.Graphics.DrawEllipse(Pens.Black , (int)(dots[i].X) - DOTSIZE, (int)(dots[i].Y) - DOTSIZE,
                     2 * DOTSIZE + 1, 2 * DOTSIZE + 1);
@@ -219,6 +240,11 @@ namespace lennardjones
                         2 * BOXSIZE + 1, 2 * BOXSIZE + 1);
 
             }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+
         } 
     }
 
